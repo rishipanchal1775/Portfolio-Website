@@ -12,10 +12,12 @@ export default function Window({ win, app }) {
     x: win.x || 150,
     y: win.y || 100
   })
+  const positionRef = useRef(position)
   const dragging = useRef(false)
   const offset = useRef({ x: 0, y: 0 })
 
   const [size, setSize] = useState({ width: win.width || 600, height: win.height || 400 })
+  const sizeRef = useRef(size)
   const resizing = useRef(false)
   const resizeDir = useRef(null)
 
@@ -31,8 +33,8 @@ export default function Window({ win, app }) {
     dragging.current = true
 
     offset.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
+      x: e.clientX - positionRef.current.x,
+      y: e.clientY - positionRef.current.y,
     }
 
     window.addEventListener("mousemove", handleMouseMove)
@@ -43,20 +45,19 @@ export default function Window({ win, app }) {
   const handleMouseMove = (e) => {
     if (!dragging.current) return
 
-    setPosition({
+    const nextPosition = {
       x: e.clientX - offset.current.x,
       y: e.clientY - offset.current.y,
-    })
+    }
+    positionRef.current = nextPosition
+    setPosition(nextPosition)
   }
 
   // 🟢 STOP DRAG
   const handleMouseUp = () => {
     dragging.current = false
 
-    updateWindow(win.id, {
-      x: position.x,
-      y: position.y
-    })
+    updateWindow(win.id, positionRef.current)
 
     window.removeEventListener("mousemove", handleMouseMove)
     window.removeEventListener("mouseup", handleMouseUp)
@@ -105,8 +106,12 @@ export default function Window({ win, app }) {
     }
 
     if (newWidth > 300 && newHeight > 200) {
-      setSize({ width: newWidth, height: newHeight })
-      setPosition({ x: newX, y: newY })
+      const nextSize = { width: newWidth, height: newHeight }
+      const nextPosition = { x: newX, y: newY }
+      sizeRef.current = nextSize
+      positionRef.current = nextPosition
+      setSize(nextSize)
+      setPosition(nextPosition)
     }
   }
 
@@ -115,10 +120,8 @@ export default function Window({ win, app }) {
     resizing.current = false
 
     updateWindow(win.id, {
-      width: size.width,
-      height: size.height,
-      x: position.x,
-      y: position.y
+      ...sizeRef.current,
+      ...positionRef.current,
     })
 
     window.removeEventListener("mousemove", handleResizing)
