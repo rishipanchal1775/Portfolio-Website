@@ -13,7 +13,7 @@ export default function Desktop({ children, onLogout }) {
       if (e.target === e.currentTarget) {
         clearSelection()
       }
-    }} className="h-screen w-screen overflow-hidden bg-[url('/wallpapers/background.png')] bg-cover bg-center text-white relative">
+    }} className="relative h-dvh w-screen min-h-0 overflow-hidden bg-[url('/wallpapers/background.png')] bg-cover bg-center text-white">
 
       {/* Icons */}
       <DesktopIcons />

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import useWindowStore from "../../store/windowStore"
 
 export default function Window({ win, app }) {
@@ -8,106 +8,122 @@ export default function Window({ win, app }) {
   const toggleMinimize = useWindowStore(state => state.toggleMinimize)
   const focusWindow = useWindowStore(state => state.focusWindow)
 
-  const [position, setPosition] = useState({
-    x: win.x || 150,
-    y: win.y || 100
-  })
+  const [position, setPosition] = useState({ x: win.x || 150, y: win.y || 100 })
   const positionRef = useRef(position)
-  const dragging = useRef(false)
-  const offset = useRef({ x: 0, y: 0 })
-
   const [size, setSize] = useState({ width: win.width || 600, height: win.height || 400 })
   const sizeRef = useRef(size)
+  const [viewport, setViewport] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }))
+  const dragging = useRef(false)
   const resizing = useRef(false)
+  const resizeStart = useRef(null)
   const resizeDir = useRef(null)
+  const dragOffset = useRef({ x: 0, y: 0 })
 
+  useEffect(() => {
+    const updateViewport = () => {
+      setViewport({ width: window.innerWidth, height: window.innerHeight })
+    }
+
+    window.addEventListener("resize", updateViewport)
+    return () => window.removeEventListener("resize", updateViewport)
+  }, [])
+
+  const visibleWidth = Math.min(size.width, Math.max(1, viewport.width - 16))
+  const visibleHeight = Math.min(size.height, Math.max(1, viewport.height - 56))
+  const visibleX = Math.min(Math.max(position.x, 8), Math.max(8, viewport.width - visibleWidth - 8))
+  const visibleY = Math.min(Math.max(position.y, 8), Math.max(8, viewport.height - visibleHeight - 48))
 
   if (win.isMinimized) return null
 
-  // 🟢 START DRAG
-  const handleMouseDown = (e) => {
-    if (win.isMaximized) return
+  const handlePointerDown = (e) => {
+    if (win.isMaximized || e.detail === 2 || e.target.closest("[data-window-control]")) return
 
-    if (e.detail === 2) return
-
+    e.preventDefault()
     dragging.current = true
-
-    offset.current = {
-      x: e.clientX - positionRef.current.x,
-      y: e.clientY - positionRef.current.y,
+    dragOffset.current = {
+      x: e.clientX - visibleX,
+      y: e.clientY - visibleY,
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("mouseup", handleMouseUp)
+    window.addEventListener("pointermove", handlePointerMove)
+    window.addEventListener("pointerup", stopDragging)
   }
 
-  // 🟢 DRAG MOVE
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (e) => {
     if (!dragging.current) return
 
+    const width = Math.min(size.width, Math.max(1, viewport.width - 16))
+    const height = Math.min(size.height, Math.max(1, viewport.height - 56))
     const nextPosition = {
-      x: e.clientX - offset.current.x,
-      y: e.clientY - offset.current.y,
+      x: Math.min(Math.max(e.clientX - dragOffset.current.x, 8), Math.max(8, viewport.width - width - 8)),
+      y: Math.min(Math.max(e.clientY - dragOffset.current.y, 8), Math.max(8, viewport.height - height - 48)),
     }
     positionRef.current = nextPosition
     setPosition(nextPosition)
   }
 
-  // 🟢 STOP DRAG
-  const handleMouseUp = () => {
+  const stopDragging = () => {
+    if (!dragging.current) return
     dragging.current = false
-
     updateWindow(win.id, positionRef.current)
-
-    window.removeEventListener("mousemove", handleMouseMove)
-    window.removeEventListener("mouseup", handleMouseUp)
+    window.removeEventListener("pointermove", handlePointerMove)
+    window.removeEventListener("pointerup", stopDragging)
   }
 
-  // 🟢 RESIZE START
-  const handleResizeStart = (e, dir) => {
+  const handleResizeStart = (e, direction) => {
     e.stopPropagation()
     if (win.isMaximized) return
 
+    e.preventDefault()
     resizing.current = true
-    resizeDir.current = dir
+    resizeDir.current = direction
+    resizeStart.current = {
+      x: visibleX,
+      y: visibleY,
+      width: visibleWidth,
+      height: visibleHeight,
+      clientX: e.clientX,
+      clientY: e.clientY,
+    }
 
-    window.addEventListener("mousemove", handleResizing)
-    window.addEventListener("mouseup", stopResizing)
+    window.addEventListener("pointermove", handleResizing)
+    window.addEventListener("pointerup", stopResizing)
   }
 
-  // 🟢 RESIZING
   const handleResizing = (e) => {
-    if (!resizing.current) return
+    if (!resizing.current || !resizeStart.current) return
 
-    const { width, height } = size
-    const { x, y } = position
+    const start = resizeStart.current
+    const deltaX = e.clientX - start.clientX
+    const deltaY = e.clientY - start.clientY
+    const direction = resizeDir.current
+    const minWidth = Math.min(300, Math.max(1, viewport.width - 16))
+    const minHeight = Math.min(200, Math.max(1, viewport.height - 56))
+    const maxWidth = Math.max(1, viewport.width - 16)
+    const maxHeight = Math.max(1, viewport.height - 56)
 
-    let newWidth = width
-    let newHeight = height
-    let newX = x
-    let newY = y
+    let width = start.width
+    let height = start.height
+    let x = start.x
+    let y = start.y
 
-    if (resizeDir.current.includes("right")) {
-      newWidth = e.clientX - x
+    if (direction.includes("right")) width = Math.min(maxWidth, start.width + deltaX)
+    if (direction.includes("bottom")) height = Math.min(maxHeight, start.height + deltaY)
+    if (direction.includes("left")) {
+      width = Math.min(maxWidth, start.width - deltaX)
+      x = start.x + (start.width - width)
+    }
+    if (direction.includes("top")) {
+      height = Math.min(maxHeight, start.height - deltaY)
+      y = start.y + (start.height - height)
     }
 
-    if (resizeDir.current.includes("bottom")) {
-      newHeight = e.clientY - y
-    }
-
-    if (resizeDir.current.includes("left")) {
-      newWidth = width + (x - e.clientX)
-      newX = e.clientX
-    }
-
-    if (resizeDir.current.includes("top")) {
-      newHeight = height + (y - e.clientY)
-      newY = e.clientY
-    }
-
-    if (newWidth > 300 && newHeight > 200) {
-      const nextSize = { width: newWidth, height: newHeight }
-      const nextPosition = { x: newX, y: newY }
+    if (width >= minWidth && height >= minHeight) {
+      const nextSize = { width, height }
+      const nextPosition = { x, y }
       sizeRef.current = nextSize
       positionRef.current = nextPosition
       setSize(nextSize)
@@ -115,111 +131,68 @@ export default function Window({ win, app }) {
     }
   }
 
-  // 🟢 STOP RESIZE
   const stopResizing = () => {
+    if (!resizing.current) return
     resizing.current = false
-
-    updateWindow(win.id, {
-      ...sizeRef.current,
-      ...positionRef.current,
-    })
-
-    window.removeEventListener("mousemove", handleResizing)
-    window.removeEventListener("mouseup", stopResizing)
+    resizeStart.current = null
+    updateWindow(win.id, { ...sizeRef.current, ...positionRef.current })
+    window.removeEventListener("pointermove", handleResizing)
+    window.removeEventListener("pointerup", stopResizing)
   }
 
   return (
     <div
-      onMouseDown={() => focusWindow(win.id)}
+      onPointerDown={() => focusWindow(win.id)}
       className={`
-        absolute flex flex-col
-        bg-[#ECE9D8]
-        border border-gray-400
+        absolute z-10 flex min-h-0 min-w-0 flex-col overflow-hidden
+        border border-gray-400 bg-[#ECE9D8]
         shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#999]
-        overflow-hidden
-
-        ${win.isMaximized
-          ? "top-0 left-0 w-full h-full"
-          : ""}
+        ${win.isMaximized ? "left-0 top-0" : ""}
       `}
       style={{
         zIndex: win.zIndex,
-        ...(win.isMaximized
-          ? {}
-          : {
-            top: position.y,
-            left: position.x,
-            width: size.width,
-            height: size.height,
-          }),
+        top: win.isMaximized ? 0 : visibleY,
+        left: win.isMaximized ? 0 : visibleX,
+        width: win.isMaximized ? viewport.width : visibleWidth,
+        height: win.isMaximized ? Math.max(1, viewport.height - 48) : visibleHeight,
       }}
     >
-
-      {/* 🔵 TITLE BAR */}
       <div
-        onMouseDown={handleMouseDown}
+        onPointerDown={handlePointerDown}
         onDoubleClick={() => toggleMaximize(win.id)}
-        className="flex items-center justify-between px-2 py-1 bg-gradient-to-r from-blue-700 to-blue-500 cursor-move"
+        className="flex shrink-0 touch-none select-none items-center justify-between gap-2 bg-gradient-to-r from-blue-700 to-blue-500 px-2 py-1"
       >
-        {/* LEFT: ICON + TITLE */}
-        <div className="flex items-center gap-2">
-
-          {/* ICON BOX */}
-          <div className="w-5 h-5 bg-blue-600 flex items-center justify-center rounded-sm shadow-[0_0_1px_white]">
-            <img
-              src={win.icon || "/icons/default.png"}
-              className="w-2.5 h-3"
-            />
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-blue-600 shadow-[0_0_1px_white]">
+            <img src={win.icon || "/icons/default.png"} alt="" className="h-3 w-2.5" />
           </div>
-
-          <span className="text-white text-sm font-semibold">
-            {win.name}
-          </span>
-
+          <span className="truncate text-sm font-semibold text-white">{win.name}</span>
         </div>
 
-        {/* RIGHT BUTTONS */}
-        <div className="flex items-center gap-1">
-
-          <img
-            src="/icons/minimize.png"
-            onClick={() => toggleMinimize(win.id)}
-            className="w-5 h-5 cursor-pointer hover:brightness-75"
-          />
-
-          <img
-            src={win.isMaximized ? "/icons/restore.png" : "/icons/maximize.png"}
-            onClick={() => toggleMaximize(win.id)}
-            className="w-5 h-5 cursor-pointer hover:brightness-75"
-          />
-
-          <img
-            src="/icons/close.png"
-            onClick={() => closeWindow(win.id)}
-            className="w-5 h-5 cursor-pointer hover:brightness-75"
-          />
-
+        <div className="flex shrink-0 items-center gap-1">
+          <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => toggleMinimize(win.id)} aria-label={`Minimize ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
+            <img src="/icons/minimize.png" alt="" className="h-5 w-5" />
+          </button>
+          <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => toggleMaximize(win.id)} aria-label={win.isMaximized ? `Restore ${win.name}` : `Maximize ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
+            <img src={win.isMaximized ? "/icons/restore.png" : "/icons/maximize.png"} alt="" className="h-5 w-5" />
+          </button>
+          <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => closeWindow(win.id)} aria-label={`Close ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
+            <img src="/icons/close.png" alt="" className="h-5 w-5" />
+          </button>
         </div>
       </div>
 
-      {/* RESIZE HANDLES */}
-      <div onMouseDown={(e) => handleResizeStart(e, "right")} className="absolute top-0 right-0 w-2 h-full cursor-ew-resize" />
-      <div onMouseDown={(e) => handleResizeStart(e, "bottom")} className="absolute bottom-0 left-0 h-2 w-full cursor-ns-resize" />
-      <div onMouseDown={(e) => handleResizeStart(e, "bottom-right")} className="absolute bottom-0 right-0 w-3 h-3 cursor-nwse-resize" />
-      <div onMouseDown={(e) => handleResizeStart(e, "left")} className="absolute top-0 left-0 w-2 h-full cursor-ew-resize" />
-      <div onMouseDown={(e) => handleResizeStart(e, "top")} className="absolute top-0 left-0 w-full h-2 cursor-ns-resize" />
-
-      {/* 📦 CONTENT AREA */}
-      <div className="flex-1 p-1 bg-[#ECE9D8] min-h-5">
-
-        <div className="w-full h-full bg-gray-100 border border-gray-300 rounded-sm p-1 overflow-y-auto shadow-inner">
-
+      <div className="flex min-h-0 min-w-0 flex-1 p-1">
+        <div className="h-full min-h-0 min-w-0 w-full overflow-auto rounded-sm border border-gray-300 bg-gray-100 p-1 shadow-inner @container">
           {app?.component && <app.component />}
-
         </div>
-
       </div>
 
+      <div onPointerDown={e => handleResizeStart(e, "right")} className="absolute bottom-0 right-0 top-8 w-3 touch-none cursor-ew-resize sm:w-2" />
+      <div onPointerDown={e => handleResizeStart(e, "bottom")} className="absolute bottom-0 left-0 h-3 w-full touch-none cursor-ns-resize sm:h-2" />
+      <div onPointerDown={e => handleResizeStart(e, "bottom-right")} className="absolute bottom-0 right-0 h-4 w-4 touch-none cursor-nwse-resize" />
+      <div onPointerDown={e => handleResizeStart(e, "left")} className="absolute bottom-0 left-0 top-8 w-3 touch-none cursor-ew-resize sm:w-2" />
+      <div onPointerDown={e => handleResizeStart(e, "top")} className="absolute left-3 right-3 top-0 h-3 touch-none cursor-ns-resize sm:h-2" />
     </div>
   )
 }

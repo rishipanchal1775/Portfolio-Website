@@ -16,14 +16,14 @@ export default function Login({ onLogin }) {
 
   return (
     <div
-      className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
+      className="flex h-dvh w-screen items-center justify-center overflow-hidden bg-cover bg-center px-3"
       style={{ backgroundImage: "url('/wallpapers/login.png')" }}
     >
 
       {/* 🟦 LOGIN CARD */}
       <div
         className="
-        flex items-center gap-4 px-5 py-4 mt-40
+        flex max-w-full items-center gap-3 px-3 py-4 mt-8 sm:mt-40 sm:gap-4 sm:px-5
 
         bg-gradient-to-b from-[#5a7edc] to-[#2f56b3]
 
@@ -40,7 +40,7 @@ export default function Login({ onLogin }) {
         {/* 👤 USER ICON */}
         <div
           className="
-          w-[64px] h-[64px] flex items-center justify-center
+          h-12 w-12 shrink-0 flex items-center justify-center sm:h-16 sm:w-16
 
           bg-[#3f6ed8]
 
@@ -51,11 +51,11 @@ export default function Login({ onLogin }) {
           border-b-[#1f3c88]
           "
         >
-          <img src="/icons/profile.png" className="w-16 h-16" />
+          <img src="/icons/profile.png" className="h-full w-full" />
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex flex-col">
+        <div className="min-w-0 flex-1 flex flex-col">
 
           {/* USER LABEL */}
           <span className="text-white text-[18px] font-semibold">
@@ -73,7 +73,7 @@ export default function Login({ onLogin }) {
               onKeyDown={(e) => e.key === "Enter" && handleLogin()}
               placeholder="Enter password"
               className="
-              w-[200px] h-[26px]
+              h-[26px] w-32 min-w-0 sm:w-[200px]
               px-2 text-[12px]
 
               bg-white outline-none

@@ -31,6 +31,10 @@ const saveState = (state) => {
 
 const useWindowStore = create((set, get) => ({
   ...loadState(),
+  selectedApp: null,
+
+  selectApp: (id) => set({ selectedApp: id }),
+  clearSelection: () => set({ selectedApp: null }),
 
   // 🔥 OPEN WINDOW WITH MEMORY
   openWindow: (app) => {
@@ -153,6 +157,7 @@ const useWindowStore = create((set, get) => ({
       windows: [],
       cascadeIndex: 0,
       highestZ: 1,
+      selectedApp: null,
     })
   }
 }))

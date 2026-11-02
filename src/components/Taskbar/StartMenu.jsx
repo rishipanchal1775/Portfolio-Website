@@ -13,7 +13,7 @@ export default function StartMenu({ onLogout }) {
       {/* 🟢 START BUTTON */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-[3px] ml-5 text-white text-sm font-semibold
+        className="flex items-center gap-2 px-3 py-[3px] ml-1 sm:ml-5 text-white text-sm font-semibold
         bg-gradient-to-b from-green-400 to-green-700
         border border-green-900
         shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]
@@ -25,10 +25,10 @@ export default function StartMenu({ onLogout }) {
 
       {/* 🟦 START MENU */}
       {open && (
-        <div className="absolute ml-5 bottom-12 left-0 w-[300px] h-[420px]
+        <div className="absolute bottom-12 left-0
         bg-[#ECE9D8]
         border border-t-white border-l-white border-r-gray-500 border-b-gray-500
-        shadow-xl overflow-hidden">
+        shadow-xl" style={{ width: "min(300px, calc(100vw - 24px))", height: "min(420px, calc(100dvh - 64px))" }}>
 
           <div className="flex h-full">
 

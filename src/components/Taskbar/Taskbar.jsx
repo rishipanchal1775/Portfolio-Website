@@ -41,18 +41,18 @@ export default function Taskbar({ onLogout }) {
 
   return (
     <div
-      className="absolute bottom-0 left-0 w-full h-12 flex items-center justify-between px-2
+      className="absolute bottom-0 left-0 z-50 flex h-12 w-full items-center justify-between gap-1 px-1 sm:px-2
       bg-gradient-to-b from-[#245edb] to-[#0c2c84]
       border-t border-[#7aa2ff]"
     >
 
       {/* LEFT SIDE */}
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
 
         <StartMenu onLogout={onLogout} />
 
         {/* OPEN WINDOWS */}
-        <div className="flex gap-[8px]">
+        <div className="flex min-w-0 max-w-[65vw] gap-1 overflow-x-auto sm:max-w-none sm:gap-2">
 
           {windows.map((win) => (
             <button
@@ -64,7 +64,7 @@ export default function Taskbar({ onLogout }) {
                   focusWindow(win.id)
                 }
               }}
-              className={xpBtn}
+              className={xpBtn + " max-w-28 shrink-0"}
             >
               <img src={win.icon} className="w-4 h-3" />
               <span className="truncate max-w-[110px] leading-none">
@@ -84,14 +84,14 @@ export default function Taskbar({ onLogout }) {
       >
 
         {/* ICONS */}
-        <img src="/icons/browser.png" className="w-4 h-4 hover:bg-white/10 hover:backdrop-blur-md rounded" />
-        <img src="/icons/volume.png" className="w-4 h-4 hover:bg-white/10 hover:backdrop-blur-md rounded" />
-        <img src="/icons/battery.png" className="w-5 h-5 hover:bg-white/10 hover:backdrop-blur-md rounded" />
+        <img src="/icons/browser.png" alt="" className="hidden h-4 w-4 sm:block hover:bg-white/10 hover:backdrop-blur-md rounded" />
+        <img src="/icons/volume.png" alt="" className="hidden h-4 w-4 sm:block hover:bg-white/10 hover:backdrop-blur-md rounded" />
+        <img src="/icons/battery.png" alt="" className="hidden h-5 w-5 sm:block hover:bg-white/10 hover:backdrop-blur-md rounded" />
 
         {/* TIME */}
-        <div className="text-[12px] text-white leading-tight text-right ml-1">
+        <div className="ml-1 text-right text-[10px] leading-tight text-white sm:text-[12px]">
           <div>{time}</div>
-          <div>{date}</div>
+          <div className="hidden sm:block">{date}</div>
         </div>
 
       </div>

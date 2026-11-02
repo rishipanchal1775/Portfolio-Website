@@ -100,7 +100,7 @@ Rishi Panchal`)
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#ece9d8] text-black text-[12px]">
+    <div className="flex h-full min-h-0 min-w-0 flex-col bg-[#ece9d8] text-[12px] text-black">
 
       {/* MENU BAR */}
       <div className="px-2 py-[2px] bg-[#d4d0c8] border-b flex gap-4">
@@ -112,13 +112,13 @@ Rishi Panchal`)
       </div>
 
       {/* FILE INFO */}
-      <div className="flex justify-between px-2 py-[2px] border-b bg-[#ece9d8]">
+      <div className="flex flex-wrap justify-between gap-x-2 px-2 py-[2px] border-b bg-[#ece9d8]">
         <span>User: Rishi Panchal</span>
         <span>{fileName} | {time.toUTCString()}</span>
       </div>
 
       {/* ACTION BAR */}
-      <div className="flex items-center gap-1 px-2 py-1 border-b bg-[#ece9d8]">
+      <div className="flex flex-wrap items-center gap-1 px-2 py-1 border-b bg-[#ece9d8]">
 
         <button onClick={handleNew} className="xp-btn">New</button>
         <button onClick={handleOpen} className="xp-btn">Open...</button>
@@ -139,13 +139,13 @@ Rishi Panchal`)
       <textarea
         value={text}
         onChange={handleChange}
-        className="flex-1 p-3 font-mono text-[12px] outline-none resize-none bg-white border border-gray-400"
+        className="min-h-0 min-w-0 flex-1 p-3 font-mono text-[12px] outline-none resize-none bg-white border border-gray-400"
       />
 
       {/* STATUS BAR */}
-      <div className="flex justify-between px-2 py-[2px] bg-[#d4d0c8] border-t text-[11px]">
+      <div className="flex flex-wrap justify-between gap-1 px-2 py-[2px] bg-[#d4d0c8] border-t text-[11px]">
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
           <span>Chars: {chars}</span>
           <span>Lines: {lines}</span>
           <span>Words: {words}</span>
@@ -155,7 +155,7 @@ Rishi Panchal`)
           </span>
         </div>
 
-        <div>UTF-8 &nbsp; Windows (CRLF)</div>
+        <div className="hidden sm:block">UTF-8 &nbsp; Windows (CRLF)</div>
       </div>
 
     </div>

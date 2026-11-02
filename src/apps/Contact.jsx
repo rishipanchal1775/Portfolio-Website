@@ -53,10 +53,10 @@ export default function Contact() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#ECE9D8] text-black text-[12px]">
+    <div className="flex h-full min-w-0 flex-col bg-[#ECE9D8] text-[12px] text-black @container">
 
       {/* 🟦 MENU BAR */}
-      <div className="flex gap-5 px-3 py-[3px] bg-[#D4D0C8] border-b border-gray-500">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 px-3 py-[3px] bg-[#D4D0C8] border-b border-gray-500">
         <span>File</span>
         <span>Edit</span>
         <span>View</span>
@@ -65,12 +65,12 @@ export default function Contact() {
       </div>
 
       {/* 📂 TOOLBAR */}
-      <div className="flex items-center gap-2 px-2 py-1 bg-[#ECE9D8] border-b border-gray-500">
+      <div className="flex min-w-0 items-center gap-2 px-2 py-1 bg-[#ECE9D8] border-b border-gray-500">
 
         <button className="xp-btn px-2">◀</button>
         <button className="xp-btn px-2">▶</button>
 
-        <div className="flex-1 px-2 py-[2px] bg-white border border-gray-500 
+        <div className="min-w-0 flex-1 truncate px-2 py-[2px] bg-white border border-gray-500 
         shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_white] text-[11px]">
           📁 My Computer &gt; Portfolio &gt; Contact
         </div>
@@ -78,7 +78,7 @@ export default function Contact() {
       </div>
 
       {/* 🧭 TABS */}
-      <div className="flex border-b border-gray-500 bg-[#D4D0C8]">
+      <div className="flex min-w-0 overflow-x-auto border-b border-gray-500 bg-[#D4D0C8]">
 
         <button
           onClick={() => setActiveTab("info")}
@@ -105,10 +105,10 @@ export default function Contact() {
       </div>
 
       {/* MAIN */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden @md:flex-row">
 
         {/* 🧱 SIDEBAR */}
-        <div className="w-[180px] bg-[#ECE9D8] border-r border-gray-500 p-2 space-y-4 overflow-y-auto">
+        <div className="max-h-24 w-full shrink-0 overflow-y-auto border-b border-gray-500 bg-[#ECE9D8] p-2 @md:max-h-none @md:w-[180px] @md:border-b-0 @md:border-r">
 
           <div>
             <p className="font-semibold mb-1">Navigation</p>
@@ -138,7 +138,7 @@ export default function Contact() {
         </div>
 
         {/* 📄 CONTENT */}
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto p-3 sm:p-4">
 
           {/* INFO TAB */}
           {activeTab === "info" && (
@@ -156,7 +156,7 @@ export default function Contact() {
               {/* DETAILS */}
               <div className="border border-gray-500 bg-white p-3">
 
-                <p><b>Email:</b> {links.email}</p>
+                <p className="break-all"><b>Email:</b> {links.email}</p>
                 <p><b>Phone:</b> +91-9313386032</p>
 
               </div>

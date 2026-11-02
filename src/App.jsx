@@ -32,7 +32,7 @@ export default function App() {
   }
 
   return (
-    <div className="w-screen h-screen overflow-hidden">
+    <div className="h-dvh w-screen overflow-hidden">
 
       {/* ================= LOGIN ================= */}
       {stage === "login" && (
