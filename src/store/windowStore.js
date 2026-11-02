@@ -4,7 +4,7 @@ const STORAGE_KEY = "xp_windows_state"
 
 const loadState = () => {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    return JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || {
       windows: [],
       cascadeIndex: 0,
       highestZ: 1,
@@ -19,7 +19,7 @@ const loadState = () => {
 }
 
 const saveState = (state) => {
-  localStorage.setItem(
+  sessionStorage.setItem(
     STORAGE_KEY,
     JSON.stringify({
       windows: state.windows,
@@ -148,7 +148,7 @@ const useWindowStore = create((set, get) => ({
   },
 
   clearAll: () => {
-    localStorage.removeItem(STORAGE_KEY)
+    sessionStorage.removeItem(STORAGE_KEY)
     set({
       windows: [],
       cascadeIndex: 0,
