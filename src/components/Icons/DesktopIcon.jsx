@@ -43,9 +43,9 @@ export default function DesktopIcon({ icon, name, app }) {
       onDoubleClick={() => openWindow(app)}
       onKeyDown={handleKeyDown}
       className={`
-        group flex w-full flex-col items-center justify-center cursor-pointer select-none
+        group flex w-full h-full flex-col items-center justify-center cursor-pointer select-none
         rounded-xl p-1 transition-all duration-200 touch-manipulation
-        sm:w-auto sm:p-2
+        sm:w-auto sm:p-2 max-sm:h-25
         ${isSelected
           ? "bg-white/20 backdrop-blur-md ring-1 ring-white/40"
           : "hover:bg-white/15 hover:backdrop-blur-md active:bg-white/20 active:backdrop-blur-md"}
@@ -56,13 +56,13 @@ export default function DesktopIcon({ icon, name, app }) {
           src={icon}
           alt=""
           draggable="false"
-          className="pointer-events-none h-8 w-8 object-contain sm:h-10 sm:w-10 lg:h-10 lg:w-10"
+          className="pointer-events-none h-8 w-8 object-contain sm:h-10 sm:w-10 lg:h-10 lg:w-10 max-sm:h-11 max-sm:w-10"
         />
       </div>
 
       <p className={`
         mt-1 max-w-full truncate px-1 text-center text-[10px] transition-colors
-        sm:text-xs
+        sm:text-xs max-sm:text-[9px]
         ${isSelected ? "text-white" : "text-white group-hover:text-white"}
       `}>
         {name}

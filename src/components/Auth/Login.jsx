@@ -1,10 +1,12 @@
 import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function Login({ onLogin }) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
-  const CORRECT_PASSWORD = "admin123"
+  const CORRECT_PASSWORD = "password123"
 
   const handleLogin = () => {
     if (password === CORRECT_PASSWORD) {
@@ -23,7 +25,7 @@ export default function Login({ onLogin }) {
       {/* 🟦 LOGIN CARD */}
       <div
         className="
-        flex max-w-full items-center gap-3 px-3 py-4 mt-8 sm:mt-40 sm:gap-4 sm:px-5
+        flex max-w-full items-center gap-3 px-3 py-4 mt-8 sm:mt-40 sm:gap-4 sm:px-5 max-sm:mt-40 max-sm:gap-3 max-sm:px-4 max-sm:py-3
 
         bg-gradient-to-b from-[#5a7edc] to-[#2f56b3]
 
@@ -66,25 +68,36 @@ export default function Login({ onLogin }) {
           <div className="flex items-center mt-1">
 
             {/* INPUT */}
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              placeholder="Enter password"
-              className="
-              h-[26px] w-32 min-w-0 sm:w-[200px]
-              px-2 text-[12px]
+            <div className="relative min-w-0">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                placeholder="Enter password"
+                className="
+                h-[26px] w-32 min-w-0
+                pl-2 pr-7 text-[12px] sm:w-[200px]
 
-              bg-white outline-none
+                bg-white outline-none
 
-              border
-              border-t-[#808080]
-              border-l-[#808080]
-              border-r-white
-              border-b-white
-              "
-            />
+                border
+                border-t-[#808080]
+                border-l-[#808080]
+                border-r-white
+                border-b-white
+                "
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                className="absolute right-1 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[#555]"
+              >
+                {showPassword ? <EyeOff size={14} aria-hidden="true" /> : <Eye size={14} aria-hidden="true" />}
+              </button>
+            </div>
 
             {/* ➡ XP BUTTON */}
             <button
@@ -113,7 +126,7 @@ export default function Login({ onLogin }) {
 
           {/* HINT */}
           <span className="text-[10px] mt-1 text-[#d6e3ff]">
-            Hint: admin123
+            Hint: password123
           </span>
 
           {/* ERROR */}
