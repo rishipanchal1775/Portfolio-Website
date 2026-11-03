@@ -171,13 +171,13 @@ export default function Window({ win, app }) {
 
         <div className="flex shrink-0 items-center gap-1">
           <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => toggleMinimize(win.id)} aria-label={`Minimize ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
-            <img src="/icons/minimize.png" alt="" className="h-5 w-5" />
+            <img src="/icons/minimize.png" alt="" className="border border-gray-500 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] active:shadow-[inset_-1px_-1px_0_white,inset_1px_1px_0_#808080]; h-5 w-5" />
           </button>
           <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => toggleMaximize(win.id)} aria-label={win.isMaximized ? `Restore ${win.name}` : `Maximize ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
-            <img src={win.isMaximized ? "/icons/restore.png" : "/icons/maximize.png"} alt="" className="h-5 w-5" />
+            <img src={win.isMaximized ? "/icons/restore.png" : "/icons/maximize.png"} alt="" className="border border-gray-500 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] active:shadow-[inset_-1px_-1px_0_white,inset_1px_1px_0_#808080]; h-5 w-5" />
           </button>
           <button data-window-control onPointerDown={e => e.stopPropagation()} onClick={() => closeWindow(win.id)} aria-label={`Close ${win.name}`} className="flex h-7 w-7 items-center justify-center sm:h-6 sm:w-6">
-            <img src="/icons/close.png" alt="" className="h-5 w-5" />
+            <img src="/icons/close.png" alt="" className="border border-gray-500 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] active:shadow-[inset_-1px_-1px_0_white,inset_1px_1px_0_#808080]; h-5 w-5" />
           </button>
         </div>
       </div>
