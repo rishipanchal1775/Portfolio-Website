@@ -1,24 +1,13 @@
 import useWindowStore from "../store/windowStore"
-import apps from "../data/apps"
+import { getAppById } from "../data/apps"
+import { coreTechnologies, experienceHighlights } from "../data/skills"
 
 export default function Skills() {
 
-    const projectApp = apps.find(a => a.id === "projects")
-    const contactApp = apps.find(a => a.id === "contact")
+    const projectApp = getAppById("projects")
+    const contactApp = getAppById("contact")
 
     const openWindow = useWindowStore(state => state.openWindow)
-
-    const coreTech = [
-        "React", "Next.js", "Node.js", "REST API",
-        "MongoDB"
-    ]
-
-    const highlights = [
-        {
-            title: "Web Development",
-            desc: "Built scalable web apps using MERN & modern frameworks"
-        }
-    ]
 
     return (
         <div className="w-full h-full flex flex-col bg-[#ECE9D8] text-black text-[12px]">
@@ -53,7 +42,7 @@ export default function Skills() {
                 <button className="xp-btn px-2">◀</button>
                 <button className="xp-btn px-2">▶</button>
 
-                <div className="flex-1 px-2 py-[2px] bg-white border border-gray-500 
+                <div className="flex-1 px-2 py-[2px] bg-white border border-gray-500
                 shadow-[inset_1px_1px_0_#808080,inset_-1px_-1px_0_white] text-[11px]">
                     📁 My Computer &gt; Portfolio &gt; Skills
                 </div>
@@ -65,7 +54,7 @@ export default function Skills() {
             <div className="flex-1 overflow-y-auto p-4 space-y-5">
 
                 {/* HEADER PANEL */}
-                <div className="border border-gray-500 bg-[#ECE9D8] 
+                <div className="border border-gray-500 bg-[#ECE9D8]
                 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] p-3">
 
                     <p className="font-bold text-[14px] mb-1">
@@ -78,7 +67,7 @@ export default function Skills() {
                 </div>
 
                 {/* CORE TECH PANEL */}
-                <div className="border border-gray-500 bg-[#ECE9D8] 
+                <div className="border border-gray-500 bg-[#ECE9D8]
                 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] p-3">
 
                     <p className="font-semibold mb-2">
@@ -86,9 +75,9 @@ export default function Skills() {
                     </p>
 
                     <div className="flex flex-wrap gap-2">
-                        {coreTech.map((tech, i) => (
+                        {coreTechnologies.map((tech) => (
                             <span
-                                key={i}
+                                key={tech}
                                 className="px-2 py-[2px] bg-[#D4D0C8] border border-gray-500 text-[11px]"
                             >
                                 {tech}
@@ -98,20 +87,20 @@ export default function Skills() {
                 </div>
 
                 {/* EXPERIENCE PANEL */}
-                <div className="border border-gray-500 bg-[#ECE9D8] 
+                <div className="border border-gray-500 bg-[#ECE9D8]
                 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080] p-3">
 
                     <p className="font-semibold mb-2">
                         🚀 Experience Highlights
                     </p>
 
-                    {highlights.map((item, i) => (
-                        <div key={i} className="mb-2">
+                    {experienceHighlights.map((item) => (
+                        <div key={item.title} className="mb-2">
                             <p className="font-semibold text-[12px]">
                                 {item.title}
                             </p>
                             <p className="text-[11px] text-gray-700">
-                                {item.desc}
+                                {item.description}
                             </p>
                         </div>
                     ))}

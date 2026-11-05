@@ -1,4 +1,4 @@
-import apps from "../../data/apps"
+import appComponents from "../../apps/appComponents"
 import useWindowStore from "../../store/windowStore"
 import Window from "./Window"
 
@@ -8,16 +8,14 @@ export default function WindowManager() {
   return (
     <>
       {windows.map((win) => {
-        // 🔥 reconnect window with real app config
-        const appConfig = apps.find(a => a.id === win.id)
-
-        if (!appConfig) return null
+        const Component = appComponents[win.id]
+        if (!Component) return null
 
         return (
           <Window
             key={win.id}
             win={win}
-            app={appConfig}
+            Component={Component}
           />
         )
       })}

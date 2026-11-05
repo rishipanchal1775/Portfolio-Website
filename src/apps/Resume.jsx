@@ -1,3 +1,6 @@
+import profile from "../data/profile"
+import resumeContent from "../data/resume"
+
 export default function Resume() {
   return (
     <div className="overflow-y-auto bg-[#ECE9D8] p-3 text-black text-[12px]">
@@ -5,15 +8,15 @@ export default function Resume() {
       {/* HEADER */}
       <div className="mb-3">
         <h1 className="text-[20px] font-bold text-blue-800">
-          Rishi Panchal
+          {profile.name}
         </h1>
 
         <p className="text-[13px] text-blue-700">
-          Web Developer
+          {profile.title}
         </p>
 
         <p className="text-[11px] text-gray-700">
-          Maharaja Sayajirao University, Vadodara, Gujarat
+          {profile.location}
         </p>
 
         {/* DOWNLOAD BUTTON (XP STYLE) */}
@@ -29,40 +32,40 @@ export default function Resume() {
       <div className="mb-3 p-2 bg-[#d4d0c8] border border-gray-500 shadow-[inset_1px_1px_0_white,inset_-1px_-1px_0_#808080]">
 
         <p className="text-[11px]">
-          📧 
-          <a href="mailto:panchal.rishi1700@gmail.com" className="text-blue-700 underline ml-1">
-            panchal.rishi1700@gmail.com
+          📧
+          <a href={`mailto:${profile.email}`} className="text-blue-700 underline ml-1">
+            {profile.email}
           </a>
           {" • "}
-          📱 +91-9313386032
+          📱 {profile.phone}
         </p>
 
         <p className="text-[11px] mt-1">
           🔗{" "}
-          <a 
-            href="https://www.linkedin.com/in/rishi-panchal"
+          <a
+            href={profile.links.linkedin}
             target="_blank"
             className="text-blue-700 underline"
           >
             LinkedIn
           </a>
 
-          {" • "} 
+          {" • "}
 
           💻{" "}
-          <a 
-            href="https://github.com/rishipanchal1775"
+          <a
+            href={profile.links.github}
             target="_blank"
             className="text-blue-700 underline"
           >
             GitHub
           </a>
 
-          {" • "} 
+          {" • "}
 
           🌐{" "}
-          <a 
-            href="https://your-portfolio.com"
+          <a
+            href={profile.links.portfolio}
             target="_blank"
             className="text-blue-700 underline"
           >
@@ -73,72 +76,36 @@ export default function Resume() {
 
       {/* ABOUT */}
       <Section title="About Me">
-        <p className="mb-1">
-          Motivated and creative BCA student with a strong interest in full-stack development.
-        </p>
+        <p className="mb-1">{resumeContent.about.summary}</p>
 
         <ul className="list-disc ml-4 space-y-[2px]">
-          <li>Quick learner and dedicated</li>
-          <li>Eager to take on challenges</li>
-          <li>Seeking internship opportunities</li>
-          <li>Interested in real-world projects</li>
+          {resumeContent.about.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
         </ul>
       </Section>
 
       {/* EDUCATION */}
       <Section title="Education">
-        <p className="font-semibold">
-          Maharaja Sayajirao University, Vadodara
-        </p>
-        <p className="text-[11px]">
-          Bachelor of Computer Application (2023 - 2026)
-        </p>
+        <p className="font-semibold">{resumeContent.education.institution}</p>
+        <p className="text-[11px]">{resumeContent.education.degree}</p>
       </Section>
 
       {/* PROJECTS */}
       <Section title="Projects">
 
-        <div className="mb-2">
-          <p className="font-semibold">Employee Management System</p>
-
-          <ul className="list-disc ml-4 text-[11px]">
-            <li>Admin & Employee dashboard</li>
-            <li>Authentication system</li>
-            <li>Task management</li>
-          </ul>
-
-          <p className="text-[10px] mt-1">
-            🔗{" "}
-            <a 
-              href="https://github.com/rishipanchal1775"
-              target="_blank"
-              className="text-blue-700 underline"
-            >
-              View Project
-            </a>
-          </p>
-        </div>
-
-        <div>
-          <p className="font-semibold">SteadFast.ai (In Progress)</p>
-
-          <ul className="list-disc ml-4 text-[11px]">
-            <li>MERN AI SaaS app</li>
-            <li>Clerk authentication</li>
-            <li>AI tools (blog, image, resume)</li>
-          </ul>
-
-          <p className="text-[10px] mt-1">
-            🔗{" "}
-            <a 
-              href="https://github.com/rishipanchal1775"
-              target="_blank"
-              className="text-blue-700 underline"
-            >
-              View Project
-            </a>
-          </p>
-        </div>
+        {resumeContent.projects.map((project, index) => (
+          <div key={project.name} className={index === 0 ? "mb-2" : ""}>
+            <p className="font-semibold">{project.name}</p>
+            <ul className="list-disc ml-4 text-[11px]">
+              {project.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+            </ul>
+            <p className="text-[10px] mt-1">
+              🔗{" "}
+              <a href={project.link} target="_blank" className="text-blue-700 underline">
+                View Project
+              </a>
+            </p>
+          </div>
+        ))}
 
       </Section>
 
@@ -146,18 +113,16 @@ export default function Resume() {
       <Section title="Skills">
         <div className="grid grid-cols-2 gap-2 text-[11px]">
 
-          <div>
-            <p className="font-semibold">Web:</p>
-            <p>MERN, HTML, CSS, JS</p>
-
-            <p className="font-semibold mt-1">Database:</p>
-            <p>MongoDB, MySQL</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Tools:</p>
-            <p>Next.js, Tailwind, Git</p>
-          </div>
+          {resumeContent.skillColumns.map((column) => (
+            <div key={column[0].label}>
+              {column.map((group) => (
+                <div key={group.label}>
+                  <p className={`font-semibold ${group.label === "Database" ? "mt-1" : ""}`}>{group.label}:</p>
+                  <p>{group.items.join(", ")}</p>
+                </div>
+              ))}
+            </div>
+          ))}
 
         </div>
       </Section>
@@ -165,7 +130,7 @@ export default function Resume() {
       {/* ADDITIONAL */}
       <Section title="Additional">
         <p className="text-[11px]">
-          Languages: English, Hindi, Gujarati
+          Languages: {resumeContent.languages.join(", ")}
         </p>
       </Section>
 

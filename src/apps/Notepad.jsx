@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import profile from "../data/profile"
 
 export default function Notepad() {
   const [text, setText] = useState(`Dear Hiring Manager,
@@ -7,7 +8,7 @@ I'm excited to apply for the position at your esteemed company. My experience wi
 
 Let's connect!
 Best,
-Rishi Panchal`)
+${profile.name}`)
 
   const [fileHandle, setFileHandle] = useState(null)
   const [fileName, setFileName] = useState("Untitled.txt")
@@ -47,7 +48,9 @@ Rishi Panchal`)
       setFileHandle(handle)
       setFileName(file.name)
       setSaved(true)
-    } catch {}
+    } catch {
+      return
+    }
   }
 
   // ================= SAVE =================
@@ -60,7 +63,9 @@ Rishi Panchal`)
       await writable.close()
 
       setSaved(true)
-    } catch {}
+    } catch {
+      return
+    }
   }
 
   // ================= SAVE AS =================
@@ -78,7 +83,9 @@ Rishi Panchal`)
       setFileHandle(handle)
       setFileName(handle.name || "file.txt")
       setSaved(true)
-    } catch {}
+    } catch {
+      return
+    }
   }
 
   // ================= GENERATE =================
@@ -90,7 +97,7 @@ I am excited to apply for this opportunity. With strong experience in full stack
 Looking forward to contributing.
 
 Best,
-Rishi Panchal`)
+${profile.name}`)
     setSaved(false)
   }
 
@@ -113,7 +120,7 @@ Rishi Panchal`)
 
       {/* FILE INFO */}
       <div className="flex flex-wrap justify-between gap-x-2 px-2 py-[2px] border-b bg-[#ece9d8]">
-        <span>User: Rishi Panchal</span>
+        <span>User: {profile.name}</span>
         <span>{fileName} | {time.toUTCString()}</span>
       </div>
 

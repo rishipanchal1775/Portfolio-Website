@@ -25,4 +25,3 @@ export default function Desktop({ children, onLogout }) {
     </div>
   )
 }
-

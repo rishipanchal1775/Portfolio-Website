@@ -1,4 +1,5 @@
 import { useState } from "react"
+import profile from "../../data/profile"
 
 export default function StartMenu({ onLogout }) {
   const [open, setOpen] = useState(false)
@@ -48,10 +49,10 @@ export default function StartMenu({ onLogout }) {
                 <img src="/icons/profile.png" className="w-10 h-9" />
                 <div>
                   <p className="text-sm font-semibold text-black">
-                    Rishi Panchal
+                    {profile.name}
                   </p>
                   <p className="text-[11px] text-gray-700">
-                    Web Developer
+                    {profile.title}
                   </p>
                 </div>
               </div>

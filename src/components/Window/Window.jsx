@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react"
 import useWindowStore from "../../store/windowStore"
+import { clampWindow, resizeWindow } from "../../utils/windowGeometry"
 
-export default function Window({ win, app }) {
+export default function Window({ win, Component }) {
   const updateWindow = useWindowStore(state => state.updateWindow)
   const closeWindow = useWindowStore(state => state.closeWindow)
   const toggleMaximize = useWindowStore(state => state.toggleMaximize)
@@ -31,10 +32,8 @@ export default function Window({ win, app }) {
     return () => window.removeEventListener("resize", updateViewport)
   }, [])
 
-  const visibleWidth = Math.min(size.width, Math.max(1, viewport.width - 16))
-  const visibleHeight = Math.min(size.height, Math.max(1, viewport.height - 56))
-  const visibleX = Math.min(Math.max(position.x, 8), Math.max(8, viewport.width - visibleWidth - 8))
-  const visibleY = Math.min(Math.max(position.y, 8), Math.max(8, viewport.height - visibleHeight - 48))
+  const visible = clampWindow(position, size, viewport)
+  const { x: visibleX, y: visibleY, width: visibleWidth, height: visibleHeight } = visible
 
   if (win.isMinimized) return null
 
@@ -55,12 +54,11 @@ export default function Window({ win, app }) {
   const handlePointerMove = (e) => {
     if (!dragging.current) return
 
-    const width = Math.min(size.width, Math.max(1, viewport.width - 16))
-    const height = Math.min(size.height, Math.max(1, viewport.height - 56))
-    const nextPosition = {
-      x: Math.min(Math.max(e.clientX - dragOffset.current.x, 8), Math.max(8, viewport.width - width - 8)),
-      y: Math.min(Math.max(e.clientY - dragOffset.current.y, 8), Math.max(8, viewport.height - height - 48)),
-    }
+    const { x, y } = clampWindow({
+      x: e.clientX - dragOffset.current.x,
+      y: e.clientY - dragOffset.current.y,
+    }, size, viewport)
+    const nextPosition = { x, y }
     positionRef.current = nextPosition
     setPosition(nextPosition)
   }
@@ -97,38 +95,16 @@ export default function Window({ win, app }) {
     if (!resizing.current || !resizeStart.current) return
 
     const start = resizeStart.current
-    const deltaX = e.clientX - start.clientX
-    const deltaY = e.clientY - start.clientY
-    const direction = resizeDir.current
-    const minWidth = Math.min(300, Math.max(1, viewport.width - 16))
-    const minHeight = Math.min(200, Math.max(1, viewport.height - 56))
-    const maxWidth = Math.max(1, viewport.width - 16)
-    const maxHeight = Math.max(1, viewport.height - 56)
+    const result = resizeWindow(start, resizeDir.current, {
+      x: e.clientX - start.clientX,
+      y: e.clientY - start.clientY,
+    }, viewport)
+    if (!result) return
 
-    let width = start.width
-    let height = start.height
-    let x = start.x
-    let y = start.y
-
-    if (direction.includes("right")) width = Math.min(maxWidth, start.width + deltaX)
-    if (direction.includes("bottom")) height = Math.min(maxHeight, start.height + deltaY)
-    if (direction.includes("left")) {
-      width = Math.min(maxWidth, start.width - deltaX)
-      x = start.x + (start.width - width)
-    }
-    if (direction.includes("top")) {
-      height = Math.min(maxHeight, start.height - deltaY)
-      y = start.y + (start.height - height)
-    }
-
-    if (width >= minWidth && height >= minHeight) {
-      const nextSize = { width, height }
-      const nextPosition = { x, y }
-      sizeRef.current = nextSize
-      positionRef.current = nextPosition
-      setSize(nextSize)
-      setPosition(nextPosition)
-    }
+    sizeRef.current = result.size
+    positionRef.current = result.position
+    setSize(result.size)
+    setPosition(result.position)
   }
 
   const stopResizing = () => {
@@ -184,7 +160,7 @@ export default function Window({ win, app }) {
 
       <div className="flex min-h-0 min-w-0 flex-1 p-1">
         <div className="h-full min-h-0 min-w-0 w-full overflow-auto rounded-sm border border-gray-300 bg-gray-100 p-1 shadow-inner @container">
-          {app?.component && <app.component />}
+          {Component && <Component />}
         </div>
       </div>
 

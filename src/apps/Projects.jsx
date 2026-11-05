@@ -1,23 +1,4 @@
-const projects = [
-  {
-    name: "SteadFast AI",
-    description: "An AI SaaS app with multiple AI features.",
-    category: "AI SaaS App",
-    size: "5 MB",
-    date: "Dec, 2025",
-    icon: "🤖",
-    link: "https://github.com/rishipanchal1775",
-  },
-  {
-    name: "Agency AI",
-    description: "A dynamic and responsive marketing website.",
-    category: "Frontend Website",
-    size: "5 MB",
-    date: "Mar, 2026",
-    icon: "📋",
-    link: "https://github.com/rishipanchal1775",
-  },
-]
+import projects from "../data/projects"
 
 export default function Projects() {
   return (
