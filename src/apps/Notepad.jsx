@@ -4,7 +4,7 @@ import profile from "../data/profile"
 export default function Notepad() {
   const [text, setText] = useState(`Dear Hiring Manager,
 
-I'm excited to apply for the position at your esteemed company. My experience with full stack development, machine learning, and building beautiful web experiences (like this portfolio!) makes me a great fit.
+I am eager to connect with mentors, industry professionals, and fellow learners to expand my network and explore a wide range of opportunities, including internships, full-time positions, freelance assignments, and collaborative projects with organizations. With a versatile skill set spanning Web Development, DevOps, and Cloud technologies, combined with hands-on experience in building modern, visually engaging, and user-friendly web experiences, I consider myself a strong candidate for diverse technical opportunities. I am adaptable, eager to learn, and committed to delivering quality solutions while contributing meaningful value to teams and organizations.
 
 Let's connect!
 Best,
