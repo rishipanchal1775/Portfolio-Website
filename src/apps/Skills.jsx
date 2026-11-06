@@ -62,7 +62,7 @@ export default function Skills() {
                     </p>
 
                     <p className="text-[11px] text-gray-700">
-                        Full Stack Developer focused on building practical and scalable applications.
+                        Web Developer and DevOps & Cloud Enthusiast specializing in scalable applications, workflow automation, CI/CD, and cloud infrastructure.
                     </p>
                 </div>
 
