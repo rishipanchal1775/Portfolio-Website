@@ -2,8 +2,8 @@ export const coreTechnologies = ["React", "Next.js", "Node.js", "REST API", "Mon
 
 export const experienceHighlights = [
   {
-    title: "Web Development | Aspiring DevOps & Cloud Engineer",
-    description: "Built scalable web apps using MERN & modern frameworks and Proficient in Linux, Git, Docker, and Kubernetes; actively training in AWS cloud architecture.",
+    title: "Web Development",
+    description: "Built scalable web apps using MERN & modern frameworks.",
   },
   {
     title: "Aspiring DevOps and Cloud Engineer",
