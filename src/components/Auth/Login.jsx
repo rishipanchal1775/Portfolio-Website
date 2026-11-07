@@ -61,7 +61,7 @@ export default function Login({ onLogin }) {
 
           {/* USER LABEL */}
           <span className="text-white text-[18px] font-semibold">
-            Users
+            Rishi Panchal
           </span>
 
           {/* INPUT ROW */}
