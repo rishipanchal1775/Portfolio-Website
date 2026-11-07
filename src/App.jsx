@@ -3,7 +3,13 @@ import Login from "./components/Auth/Login"
 import Desktop from "./components/Desktop/Desktop"
 
 export default function App() {
-  const [stage, setStage] = useState("login")
+  const [stage, setStage] = useState(() => {
+    try {
+      return sessionStorage.getItem("xp_authenticated") === "true" ? "desktop" : "login"
+    } catch {
+      return "login"
+    }
+  })
   // login → loading → desktop → shutdown
 
   // ================= LOGIN =================
@@ -13,6 +19,11 @@ export default function App() {
     setTimeout(() => {
       const audio = new Audio("/music/login.mp3")
       audio.play()
+      try {
+        sessionStorage.setItem("xp_authenticated", "true")
+      } catch {
+        // Continue even when session storage is unavailable.
+      }
       setStage("desktop")
     }, 2500)
   }
@@ -27,6 +38,11 @@ export default function App() {
 
     // after delay go back to login
     setTimeout(() => {
+      try {
+        sessionStorage.removeItem("xp_authenticated")
+      } catch {
+        // Continue even when session storage is unavailable.
+      }
       setStage("login")
     }, 2500)
   }
