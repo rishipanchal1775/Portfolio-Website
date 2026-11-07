@@ -60,8 +60,9 @@ export default function Taskbar({ onLogout }) {
               onClick={() => {
                 if (win.isMinimized) {
                   toggleMinimize(win.id)
-                } else {
                   focusWindow(win.id)
+                } else {
+                  toggleMinimize(win.id)
                 }
               }}
               className={xpBtn + " max-w-28 shrink-0"}
