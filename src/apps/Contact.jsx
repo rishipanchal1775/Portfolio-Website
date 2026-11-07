@@ -41,9 +41,9 @@ export default function Contact() {
       }
     } catch {
       setStatus(contact.messages.error)
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
